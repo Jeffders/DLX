@@ -1,0 +1,289 @@
+{
+    "type": "AdaptiveCard",
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.2",
+    "body": [
+        {
+            "$when": "${exists(banner)}",
+            "type": "ColumnSet",
+            "style": "${bannerStyle}",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${banner}",
+                            "wrap": true
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "🗙",
+                            "wrap": true
+                        }
+                    ],
+                    "horizontalAlignment": "Right",
+                    "selectAction": {
+                        "type": "Action.ToggleVisibility",
+                        "title": "Close",
+                        "targetElements": [
+                            "banner"
+                        ]
+                    }
+                }
+            ],
+            "id": "banner"
+        },
+        {
+            "type": "TextBlock",
+            "text": "This card is custom, just for this repo!!"
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${$root.RepoName} ${humanizer.humanizeDateTime($root.Data.UpdatedAt)}",
+                            "size": "small",
+                            "isSubtle": true
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "size": "small",
+                            "width": "15px",
+                            "height": "15px",
+                            "altText": "Refresh",
+                            "url": "https://vectorified.com/images/refresh-icon-png-transparent-15.png",
+                            "selectAction": {
+                                "type": "Action.Execute",
+                                "verb": "show",
+                                "title": "Refresh",
+                                "data": {
+                                    "url": "${$root.Data.HtmlUrl}",
+                                    "verb": "show"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "${if($root.Data.State.StringValue == 'closed', 'https://githubcards.azurewebsites.net/Closed.png', 'https://githubcards.azurewebsites.net/Open.png')}"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "RichTextBlock",
+                            "inlines": [
+                                {
+                                    "type": "TextRun",
+                                    "text": "${$root.Data.Title}",
+                                    "weight": "Bolder",
+                                    "size": "Medium"
+                                },
+                                {
+                                    "type": "TextRun",
+                                    "text": " #${$root.Data.Number}",
+                                    "isSubtle": true,
+                                    "size": "Medium"
+                                }
+                            ],
+                            "spacing": "None"
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": "${Data.Body}",
+            "fontType": "Monospace",
+            "wrap": true,
+            "maxLines": 2
+        },
+        {
+            "type": "RichTextBlock",
+            "inlines": [
+                {
+                    "$data": "${$root.Data.Labels}",
+                    "type": "TextRun",
+                    "text": "${if($index == count($root.Data.Labels) - 1, Name, Name + ' | ')}",
+                    "color": "good",
+                    "weight": "bolder"
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "${$root.Data.Assignee.AvatarUrl}",
+                            "size": "Small",
+                            "style": "Person",
+                            "width": "25px",
+                            "height": "25px",
+                            "spacing": "ExtraLarge"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Assigned To: ${$root.Data.Assignee.Login}"
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                }
+            ],
+            "spacing": "Large",
+            "separator": true,
+            "$when": "${exists($root.Data.Assignee)}"
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "${$root.AuthenticatedUser.AvatarUrl}",
+                            "size": "Small",
+                            "style": "Person",
+                            "width": "25px",
+                            "height": "25px",
+                            "spacing": "ExtraLarge"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "Authenticated User: ${$root.AuthenticatedUser.Name}"
+                        }
+                    ],
+                    "verticalContentAlignment": "Center"
+                },
+                {
+                    "type": "Column",
+                    "width": "auto",
+                    "items": [
+						{
+							"type": "Image",
+							"altText": "Github Sign Out",
+							"url": "https://githubcards.azurewebsites.net/Signout.png",
+							"size": "Small",
+							"width": "25px",
+							"height": "25px",
+							"spacing": "ExtraLarge",
+							"selectAction": {
+								"type": "Action.Execute",
+								"verb": "signout",
+								"title": "Logout Github",
+								"data": {
+									"url": "${$root.Data.HtmlUrl}",
+									"verb": "signout"
+								}
+							}
+						}
+                    ]
+                }
+            ],
+            "spacing": "Large",
+            "separator": true,
+            "$when": "${exists($root.AuthenticatedUser)}"
+        }
+    ],
+    "actions": [
+        {
+            "$when": "${exists($root.AuthenticatedUser)}",
+            "type": "Action.ShowCard",
+            "title": "Add comment",
+            "card": {
+                "type": "AdaptiveCard",
+                "body": [
+                    {
+                        "type": "Input.Text",
+                        "isMultiline": true,
+                        "id": "comment",
+                        "label": "Comment"
+                    }
+                ],
+                "actions": [
+                    {
+                        "type": "Action.Execute",
+                        "verb": "AddComment",
+                        "title": "Save Comment",
+                        "data": {
+                            "url": "${Data.HtmlUrl}",
+                            "verb": "AddComment"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "$when": "${exists($root.AuthenticatedUser)}",
+            "type": "Action.Execute",
+            "verb": "${if($root.Data.State.StringValue == 'open', 'close', 'reopen')}",
+            "title": "${if($root.Data.State.StringValue == 'open', 'Close issue', 'Reopen issue')}",
+            "data": {
+                "url": "${$root.Data.HtmlUrl}",
+                "verb": "${if($root.Data.State.StringValue == 'open', 'close', 'reopen')}"
+            }
+        },
+        {
+            "$when": "${exists($root.AuthenticatedUser) && $root.AuthenticatedUser.Id != $root.Data.Assignee.Id}",
+            "type": "Action.Execute",
+            "verb": "assignToMe",
+            "title": "Assign to me",
+            "data": {
+                "url": "${$root.Data.HtmlUrl}",
+                "verb": "assignToMe"
+            }
+        }
+    ]
+}
